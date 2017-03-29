@@ -80,8 +80,8 @@ future assignments.
 let minutes_spent_on_crawl () : int = 300 ;;
 
 (* Second part: Sets as dictionaries *)
-let minutes_spent_on_sets () : int = 300 ;;
+let minutes_spent_on_sets () : int = 240 ;;
 
 (* Third part: Testing the performance of the implementations *)
-let minutes_spent_on_performance () : int = failwith "not provided" ;;
+let minutes_spent_on_performance () : int = 300 ;;
 
