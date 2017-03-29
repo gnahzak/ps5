@@ -38,7 +38,7 @@ let server (index : WT.LinkIndex.dict) (ranks : PR.RankDict.dict) =
     server_loop() ;;
 
 (* main -- Crawl a bit of the web, building an index and ranks for the
-   pages, and then serve up a sarch engine for the crawled
+   pages, and then serve up a search engine for the crawled
    material. *)
 let main () =
   (* Want different random numbers every time. *)

@@ -284,13 +284,13 @@ module DictSet(C : COMPARABLE) : (SET with type elt = C.t) =
     let empty = D.empty
 
     (* implement the rest of the functions in the signature! *)
-    let is_empty d = (D.choose d = None)
+    let is_empty (d : set) = (D.choose d = None)
 
-    let insert d k = D.insert d k 0
+    let insert (d : set) (k : elt) = D.insert d k 0
 
-    let singleton k = D.insert empty k 0
+    let singleton (k : elt) = D.insert empty k 0
 
-    let fold f a d =
+    let fold (f : 'a -> elt -> 'a) (a : 'a) (d : set) =
       let g a k _ = f a k in
       D.fold g a d
 
@@ -299,27 +299,27 @@ module DictSet(C : COMPARABLE) : (SET with type elt = C.t) =
     let member = D.member
 
     (* add all elements in y to x *)
-    let union x y =
+    let union (x : set) (y : set) =
       let f (x : set) (k : elt) =
         insert x k
       in
       fold f x y
 
     (* For every element in a, remove it if it is not in b *)
-    let intersect x y =
+    let intersect (x : set) (y : set) =
       let f (modified : set) (k : elt) =
         if (member y k) then modified
         else (remove modified k)
       in
       fold f x x
 
-    let choose d =
+    let choose (d : set) =
       match D.choose d with
       | None -> None
       | Some (k, _, newD) -> Some (k, newD)
 
     let string_of_elt = D.string_of_key
-    let string_of_set s = D.string_of_dict s
+    let string_of_set (s : set) = D.string_of_dict s
 
     (* Tests for the DictSet functor -- Use the tests from the ListSet
        functor to see how you should write tests. However, you must

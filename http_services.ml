@@ -3,11 +3,11 @@
                    A Web Crawler and Search Engine
                              Spring 2017
 
-A module for sending HTTP requests and responses.  
+A module for sending HTTP requests and responses.
  *)
 
-open Pagerank ;; 
-open Webtypes ;; 
+open Pagerank ;;
+open Webtypes ;;
 open Query ;;
 
 (* The search engine home page for default responses to the client *)
@@ -42,10 +42,10 @@ let std_response_header : string =
    query, num is the number of results the query found. *)
 let query_response_header (time: float) (num : int) : string =
   std_response_header ^
-    "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML//EN\">" 
-    ^ "<html> <head> <title>AskShiebs search results </title></head>" 
-    ^ "<body><h1>Search results:</h1>" 
-    ^ "<p>" ^ string_of_int num ^ " results (" ^ (Printf.sprintf "%.5f" time) 
+    "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML//EN\">"
+    ^ "<html> <head> <title>AskShiebs search results </title></head>"
+    ^ "<body><h1>Search results:</h1>"
+    ^ "<p>" ^ string_of_int num ^ " results (" ^ (Printf.sprintf "%.5f" time)
     ^ " seconds)</p><p><ul>"
 ;;
 
@@ -74,15 +74,15 @@ let href_of_link (l : link) (root_dir: string) : string =
 
 (* html_of_urllist -- Converts a set of url's to HTML to splice into
    the search response we send to clients. *)
-let html_of_urllist (links: link list) (ranks : RankDict.dict) 
+let html_of_urllist (links: link list) (ranks : RankDict.dict)
     (root_dir: string) : string =
   let deoptionalize opt default =
     match opt with
     | Some x -> x
     | None -> default in
-  List.fold_left 
+  List.fold_left
     (fun s link ->
-      "<li>" 
+      "<li>"
         ^ (Printf.sprintf "%0.*f" 4
             (deoptionalize (RankDict.lookup ranks link) 0.0))
         ^ " <a href=\""
@@ -91,7 +91,7 @@ let html_of_urllist (links: link list) (ranks : RankDict.dict)
         ^ "</a></li>" ^ s)
     "" links
 ;;
-  
+
 (* sort_by_rank -- Returns a list of links sorted by their ranks. Does
    not return ranks. *)
 let sort_by_rank (links:LinkSet.set) (ranks : RankDict.dict) : link list =
@@ -106,12 +106,12 @@ let sort_by_rank (links:LinkSet.set) (ranks : RankDict.dict) : link list =
   let links_list = LinkSet.fold (fun l x -> x :: l) [] links in
   List.sort compare_links links_list
 ;;
-  
+
 (* gen_q_HTML -- Parsea a user query_string, evaluates the query to
    retrieve the set of links, counts the number of links returned, sort
    the links by their rank, and package it all up in HTML format.
  *)
-let gen_q_HTML (query_string : string) (index: LinkIndex.dict) 
+let gen_q_HTML (query_string : string) (index: LinkIndex.dict)
                (ranks : RankDict.dict) (root_dir: string) : string =
   let start = Unix.gettimeofday () in
   let query = Q.parse_query query_string in
@@ -125,7 +125,7 @@ let gen_q_HTML (query_string : string) (index: LinkIndex.dict)
 ;;
 
 (*----------------------------------------------------------------------
-  RESPONDING TO ALL CLIENT REQUESTS 
+  RESPONDING TO ALL CLIENT REQUESTS
 
 We assume that clients request two things from the server: they are
 always either querying the server for webpages (in which case we
@@ -185,14 +185,14 @@ let send_file (fd : Unix.file_descr) (buf : string): int =
    If we don't understand the request, then we send the default
    page. *)
 let process_request (client_fd : Unix.file_descr)
-                    (root_dir: string) 
+                    (root_dir: string)
                     (request : string)
                     (index : LinkIndex.dict)
                     (ranks: RankDict.dict)
                   : int =
   (*  let _ = Printf.printf "Request: %s\n----\n" request in
       let _ = flush_all() in *)
-  let is_search (q : string) : bool = 
+  let is_search (q : string) : bool =
     let r = Str.regexp_string "?q=" in
     Str.string_match r q 0
   in
@@ -205,28 +205,28 @@ let process_request (client_fd : Unix.file_descr)
       false
     with Not_found -> true
   in
-  let http_get_re = 
+  let http_get_re =
     Str.regexp_case_fold "GET[ \t]+/\\([^ \t]*\\)[ \t]+HTTP/1\\.[0-9]"
   in
   try
     let _ = Str.search_forward http_get_re request 0 in
     let query_string = Str.matched_group 1 request in
     let response =
-      match is_search query_string, is_safe query_string with 
-      | true, _ -> gen_q_HTML query_string index ranks root_dir 
+      match is_search query_string, is_safe query_string with
+      | true, _ -> gen_q_HTML query_string index ranks root_dir
       | false, true -> read_page (Filename.concat root_dir query_string)
       | _ -> (Printf.printf "%s" "not safe!"; flush_all (); std_response)
     in send_file client_fd response
   with _ -> send_file client_fd std_response
 ;;
-  
-  
+
+
 (*----------------------------------------------------------------------
   PROGRAMATICALLY GENERATING CLIENT REQUESTS
 
 This section provides utility for programatically generating requests
 on behalf of the client (which is what the crawler does!). *)
-  
+
 let rec receive_message (fd : Unix.file_descr) (contents: string list) : string =
   let len = Unix.recv fd buf 0 buf_len [] in
   if len = 0 then String.concat "" (List.rev contents)
@@ -252,13 +252,13 @@ let strip_headers (page_string : string) : string =
       | _ -> find_two_newlines (i + 1)
     else None
   in
-  
+
   (* find the newlines and return the string of the page information *)
   match find_two_newlines 0 with
   | None -> page_string
   | Some i -> String.sub page_string i (String.length page_string - i)
 ;;
-  
+
 (* inet_fetch_url "www.seas.harvard.edu" 80 "/foo.html" -- Returns
   as a string the message response from the web server
   www.seas.harvard.edu:80 for path "/foo.html".  This is using the
