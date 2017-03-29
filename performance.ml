@@ -1,3 +1,12 @@
+(* CS51 : Pset 5
+
+Testing file to compare efficiency of performance between DictSet and
+ListSet implementations. To run this file, simply compile using ocamlbuild
+and execute using ./performance.byte. The output will show the time taken
+for crawling and querying.
+
+To test a different set implementation, go to myset.ml and switch the statement
+at the bottom of the file. *)
 
 module AT = Askshiebs_tests ;;
 module CR = Crawl ;;
