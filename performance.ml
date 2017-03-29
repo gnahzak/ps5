@@ -8,13 +8,6 @@ open Webtypes ;;
 open Pagerank ;;
 open Query ;;
 
-(*
-open Webtypes ;;
-open Pagerank ;;
-open Crawler_services ;;
-open Crawl ;;
-open Query ;; *)
-
 (* must pass in number of pages to search, initial link *)
 let crawlDir = AT.time_crawler CR.crawler ;;
 
@@ -34,8 +27,8 @@ let query_timer (query_string : string) (index: LinkIndex.dict)
 (* i.e. for every key in the dict, see how long it takes to query it *)
 
 let timeq (index : LinkIndex.dict)
-                     (ranks : RankDict.dict)
-                     (root_dir : string) : float =
+          (ranks : RankDict.dict)
+          (root_dir : string) : float =
   let f (sum : float) (k : string) (_v : LinkSet.set) : float =
     sum +. (query_timer ("?q=" ^ k) index ranks root_dir)
   in
@@ -72,8 +65,6 @@ let test () =
   Printf.printf "Simple html: %f\n" (timeq simple ranks_simple "./simple-html");
   Printf.printf "Html: %f\n" (timeq html ranks_html "./html");
   Printf.printf "Wiki: %f\n" (timeq wiki ranks_wiki "./wiki");
-
-  (* gen_q_HTML query_string index ranks root_dir *)
 
   () ;;
 
