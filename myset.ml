@@ -276,14 +276,12 @@ module DictSet(C : COMPARABLE) : (SET with type elt = C.t) =
       let gen_value () = 0
       let gen_pair () = (gen_key (), gen_value ())
 
-        (* fill this in! *)
       end)
 
     type elt = D.key
     type set = D.dict
     let empty = D.empty
 
-    (* implement the rest of the functions in the signature! *)
     let is_empty (d : set) = (D.choose d = None)
 
     let insert (d : set) (k : elt) = D.insert d k 0
@@ -412,6 +410,12 @@ module DictSet(C : COMPARABLE) : (SET with type elt = C.t) =
       in
       List.iter f el1;
       List.iter f el2;
+
+      let neglist = generate_neg_list 50 in
+      let poslist = generate_pos_list 50 in
+      let x = insert_list empty neglist in
+      let y = insert_list empty poslist in
+      assert (is_empty (intersect x y));
       ()
 
     let test_choose () =
@@ -420,8 +424,11 @@ module DictSet(C : COMPARABLE) : (SET with type elt = C.t) =
       match choose s with
       | None -> assert (false);
       | Some (k, d) ->
-        assert (member s k);
-        assert (not (member d k));
+        assert (member s k && not (member d k));
+        match choose d with
+        | None -> assert (false);
+        | Some (k2, d2) ->
+          assert ((member s k2) && (member d k2) && not (member d2 k2));
       ()
 
     let run_tests () =

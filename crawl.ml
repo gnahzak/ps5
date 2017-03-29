@@ -43,7 +43,6 @@ let rec crawl (n : int)
     match (WT.LinkSet.choose frontier) with
     | None -> d
     | Some (mem, newFrontier) ->
-      (* Printf.printf "New link: %s, n: %i\n" (WT.string_of_link mem) n; *)
       (* add the link to the visited set*)
       let newVisited = WT.LinkSet.insert visited mem in
       match Crawler_services.get_page mem with
@@ -57,7 +56,6 @@ let rec crawl (n : int)
             | None -> WT.LinkSet.insert WT.LinkSet.empty webpage.url
             | Some linkset -> WT.LinkSet.insert linkset webpage.url
           in
-          (* Printf.printf "word: %s\n" w; *)
           WT.LinkIndex.insert d w newSet
         in
         let newD = List.fold_left f d webpage.words in
@@ -66,12 +64,9 @@ let rec crawl (n : int)
           if (WT.LinkSet.member visited n) then fron
           else (WT.LinkSet.insert fron n)
         in
-        crawl (n - 1) (WT.LinkSet.fold addLinks newFrontier webpage.links) newVisited newD
-  else
-    (* let blah =
-        Printf.printf "Final dictionary: %s\n" (WT.LinkIndex.string_of_dict d)
-    in *)
-    d ;;
+        let newFrontier = WT.LinkSet.fold addLinks newFrontier webpage.links in
+        crawl (n - 1) newFrontier newVisited newD
+  else d ;;
 
 let crawler (num_pages_to_search : int) (initial_link : WT.link) =
   crawl num_pages_to_search
