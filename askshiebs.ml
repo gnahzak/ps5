@@ -48,8 +48,8 @@ let main () =
   (* test the crawler -- prints whether tests succeeded *)
   let _ = AT.crawler_tests () in
   (* Construct the index to pass to the server *)
-  let index = 
-    AT.time_crawler CR.crawler CS.num_pages_to_search CS.initial_link in 
+  let index =
+    AT.time_crawler CR.crawler CS.num_pages_to_search CS.initial_link in
   let _ = Printf.printf "Index has been constructed.\n" in
   let _ = Printf.printf "Computing pageranks.\n" in
   let ranks = CS.compute_pagerank index in
@@ -64,7 +64,7 @@ try
       (Str.regexp "askshiebs\\.\\(byte\\|native\\)")
       (Sys.argv.(0)) 0 in
   main ()
-with Not_found -> 
+with Not_found ->
   Printf.printf "Running from test; will not start server.\n" ;;
 
 (*======================================================================
@@ -77,10 +77,10 @@ future assignments.
 ......................................................................*)
 
 (* First part: Implementing the crawler *)
-let minutes_spent_on_crawl () : int = failwith "not provided" ;;
+let minutes_spent_on_crawl () : int = 300 ;;
 
 (* Second part: Sets as dictionaries *)
-let minutes_spent_on_sets () : int = failwith "not provided" ;;
+let minutes_spent_on_sets () : int = 300 ;;
 
 (* Third part: Testing the performance of the implementations *)
 let minutes_spent_on_performance () : int = failwith "not provided" ;;
